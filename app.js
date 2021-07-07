@@ -46,59 +46,57 @@
 /* ↑↑↑ /this was default ↑↑↑ */
 
 const express      = require('express'),
-      // createError  = require('http-errors'),
       path         = require('path'),
-      // cookieParser = require('cookie-parser'),
-      // logger       = require('morgan'),
+      debug        = require('debug')('app'),
+      cookieParser = require('cookie-parser'),  // Cookies -> req.cookies / req.signedCookies
+      bodyParser   = require('body-parser'),    // розбирає тіло POST-запиту, -> req.body. ...
+      logger       = require('morgan'),         // логер результатів мережевих запитів
+      createError  = require('http-errors'),
 
       // indexRouter  = require('./routes/index'),
       // usersRouter  = require('./routes/users'),
-
-      port         = 3000;
-
-const http         = require('http');
+      // http         = require('http'),
+      config       = require('./config'),
+      log          = require('./libs/log')(module),
+      port         = config.get('port');
 
 let app = express();
+app.listen(port);
+
+// app.set('port', port);
+// http.createServer(app).listen(port, function(){
+//   console.log('Express server listening on port ' + port));
+// });
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'templates/'));
 app.set('view engine', 'ejs');
 
-app.listen(port);
-// app.set('port', port);
-// http.createServer(app).listen(app.get('port'), function(){
-//   console.log('Express server listening on port ' + app.get('port'));
-// });
+if (app.get('env') == 'development') {
+  app.use(logger('dev'));
+} else {
+  app.use(logger('combined'));
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
 
 app.use(function(req,res,next){
   res.setHeader('Content-type', 'text/html; charset=utf-8');
-  console.log('Express server listening on port ' + port);
-
-  if (req.url == '/') {
-    res.end('Головна сторінка');
-  } else {
-    next();
-  }
+  log.info('Express server listening on port: ' + port);
+  res.render('index', { title: 'Hey', message: 'Hello there!'});
+  next();
 });
 
-app.use(function(req,res,next){
-  if (req.url == '/forbidden') {
-    next(new Error('Доступ заборонено'));
-  } else {
-    next();
-  }
-});
 
-app.use(function(req,res,next){
-  if (req.url == '/test'){
-    res.end('Тестова сторіка');
-  } else {
-    next();
-  }
-});
-
-app.use(function(req,res){
-  res.status(404).send('Сторінку не знайдено :-(');
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404, 'Сторінку не знайдено'));
 });
 
 // error handler
