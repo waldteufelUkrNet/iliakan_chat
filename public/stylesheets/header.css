@@ -1,0 +1,18 @@
+.header {
+  border-bottom: 4px double grey;
+  padding: 10px;
+  display: grid;
+  grid-gap: 6px;
+  grid-template-columns: 1fr auto;
+}
+
+.info {}
+.header-btns {}
+.login {
+  border: 1px solid dodgerblue;
+  border-radius: 4px;
+  padding: 6px 12px;
+  background-color: lightskyblue;
+  text-decoration: none;
+  color: black;
+}

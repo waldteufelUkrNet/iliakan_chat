@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1 Реєстрація / вхід
+  h4 Введіть ім'я користувача та пароль.
+  h4 Якщо такого користувача не існує, він буде створений.
+
+  style
+    include ../public/stylesheets/login.css
+
+  form(action='/login', name='regform')
+    label(for='clientName') Ім'я
+    input(type='text' name='name' id="clientName")
+    label(for='clientPassword') Пароль
+    input(type='password' name='password' id="clientPassword")
+    button(type="submit") Увійти
+
+  script
+    include ../public/javascripts/login.js

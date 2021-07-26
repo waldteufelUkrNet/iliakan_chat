@@ -1,0 +1,19 @@
+style
+  include ../public/stylesheets/header.css
+
+.header
+  .info тестовий чат від Кантера
+  .header-btns
+    if (user)
+      a.login() вийти
+      script.
+        document.querySelector('.login').addEventListener('click', async function(event){
+        event.preventDefault();
+        let response = await fetch('/logout',{method:'POST'});
+        if (response.ok) {
+          window.location.href = '/';
+          }
+        return false
+        });
+    else
+      a.login(href="/login.html") увійти/зареєструватися

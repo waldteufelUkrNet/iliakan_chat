@@ -1,0 +1,26 @@
+h4, h1 {
+  text-align: center;
+}
+
+form {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+input {
+  height: 30px;
+  margin-bottom: 20px;
+}
+
+button {
+  border: 1px solid dodgerblue;
+  border-radius: 4px;
+  padding: 6px 12px;
+  background-color: lightskyblue;
+  text-decoration: none;
+  color: black;
+  height: 40px;
+  cursor: pointer;
+}

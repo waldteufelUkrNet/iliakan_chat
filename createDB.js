@@ -1,28 +1,26 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('./libs/mongoose'),
+      config   = require('./config'),
+      User     = require('./models/user').User;
 
-// Connection URL
-const url    = 'mongodb://localhost:27017/',
-      client = new MongoClient(url);
+// 1. drop db
+// 2. create 3 users
+// 3. close connection
 
-// Database Name
-const dbName = 'ik_chat';
+async function dropAddandClose() {
+  await mongoose.disconnect();
+  let connection = mongoose.createConnection(config.get('mongoose:uri'));
+  await connection.dropDatabase();
 
-async function main() {
-  // Use connect method to connect to the server
-  await client.connect();
-  console.log('Connected successfully to server');
-  const db         = client.db(dbName),
-        collection = db.collection('documents');
+  await mongoose.connect(config.get('mongoose:uri'), config.get('mongoose:options'));
 
+  let user1 = new User({username:'Tom',password:'fvdksjva67yhijn'}),
+      user2 = new User({username:'Ted',password:'dsfvae8y9ojkml3'}),
+      user3 = new User({username:'Lev',password:'vfdmni78900icks'});
 
-  const insertResult = await collection.insertMany([{ a: 1 }, { a: 2 }, { a: 3 }]);
-  console.log('Inserted documents =>', insertResult);
+  await user1.save().then( console.log('ok') ).catch(console.error);
+  await user2.save();
+  await user3.save();
 
-
-  return 'done.';
+  mongoose.disconnect();
 }
-
-main()
-  .then(console.log)
-  .catch(console.error)
-  .finally(() => client.close())
+dropAddandClose();
