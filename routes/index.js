@@ -1,7 +1,8 @@
-const express  = require('express'),
-      router   = express.Router(),
-      ObjectID = require('mongodb').ObjectID,
-      User     = require('../models/user').User;
+const express   = require('express'),
+      router    = express.Router(),
+      ObjectID  = require('mongodb').ObjectID,
+      User      = require('../models/user').User,
+      checkAuth = require('../middleware/checkAuth.js');
 
 router.get('/', function(req,res,next){
   res.render('index', {title: "chat application"});
@@ -77,14 +78,9 @@ router.get('/user/:id', function(req,res,next){
   });
 });
 
-router.get('/chat', function(req,res,next){
+router.get('/chat', checkAuth, function(req,res,next){
   res.render('chat');
 
-});
-
-router.use(function(err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
 });
 
 module.exports = router;
