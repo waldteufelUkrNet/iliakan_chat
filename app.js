@@ -10,14 +10,16 @@ const express      = require('express'),
       mongoStore   = require('connect-mongo'),
       indexRouter  = require('./routes/index'),
       // usersRouter  = require('./routes/users'),
-      // http         = require('http'),
-
+      http         = require('http'),
+      Socket       = require('socket.io'),
       config       = require('./config'),
       log          = require('./libs/log')(module),
-      port         = config.get('port');
+      port         = config.get('port'),
+      app          = express(),
+      server       = new http.Server(app),
+      sio          = Socket(server);
 
-let app = express();
-app.listen(port);
+server.listen(port);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'templates/'));
@@ -52,3 +54,18 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use( require('./error') );
+
+// web sockets
+sio.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('messageToServer', function(msg, callback) {
+    console.log('message: ' + msg);
+    socket.broadcast.emit('messageToClient', msg);
+    callback()
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
