@@ -21,8 +21,7 @@ const express      = require('express'),
 
 server.listen(port);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'templates/'));
+// view engine setupapp.set('views', path.join(__dirname, 'templates/'));
 app.set('view engine', 'pug');
 
 // app.use(helmet());
